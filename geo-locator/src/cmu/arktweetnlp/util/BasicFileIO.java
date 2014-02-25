@@ -9,7 +9,7 @@ import java.util.zip.GZIPOutputStream;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 
-import edu.cmu.geoparser.io.GetReader;
+import edu.cmu.geolocator.io.GetReader;
 
 /**
  * 
