@@ -73,7 +73,7 @@ public class Tweet {
   }
 
   /**
-   * constructor with a string. Otherfields are defaults.
+   * constructor with a string. Other fields are defaults.
    * 
    * @param tweetStr
    */

@@ -62,13 +62,13 @@ public class LocGroupFeatures {
       for (Document cand : candidates) {
         CandidateAndFeature aFeature = new CandidateAndFeature(alocentity.getTokenString(), cand,
                 alocentity);
-        //select if to fill out Y by the mode.
+        // select if to fill out Y by the mode.
         if (mode.equals("train"))
           if (alocentity.ids.contains(cand.get(InfoFields.id)))
             aFeature.setY(1);
           else
             aFeature.setY(0);
-        
+
         tempFeatureArray.add(aFeature);
       }
       featureArrays.add(tempFeatureArray);
@@ -85,6 +85,13 @@ public class LocGroupFeatures {
      */
     List<LocEntityAnnotation> userLocs = ParserFactory.getEnToponymParser().parse(
             new Tweet(t.getUserLocation()));
+    ArrayList<ArrayList<Document>>matrixDocs= new ArrayList<ArrayList<Document>>();
+    if (userLocs!=null && userLocs.size()!=0)
+      for (LocEntityAnnotation userLoc : userLocs)
+      {
+        ArrayList<Document> docs = ResourceFactory.getClbIndex().getDocumentsByPhrase(userLoc.getTokenString());
+        matrixDocs.add(docs);
+      }
 
     /**
      * Fill In The Features. put the features into arrays.
@@ -113,7 +120,7 @@ public class LocGroupFeatures {
           /**
            * f17 user location overlap with toponym. (country and state)
            * */
-          aFeature.setF_userLocOverlap(userLocs);
+          aFeature.setF_userLocOverlap(matrixDocs, userLocs);
         }
 
         // deprecated.
@@ -208,22 +215,6 @@ public class LocGroupFeatures {
       }
 
       /**
-       * f9: set the most popular countries and popular states for multiple topos in the same
-       * sentence.
-       */
-      for (int i = 0; i < featureArrays.size(); i++) {
-        for (int j = 0; j < featureArrays.get(i).size(); j++) {
-          CandidateAndFeature afeature = featureArrays.get(i).get(j);
-          String cc = afeature.getCountryCode();
-          String adm1 = afeature.getAdm1Code();
-          if (commonCountries.contains(cc))
-            afeature.setF_isCommonCountry(true);
-          if (commonStates.contains(adm1))
-            afeature.setF_isCommonState(true);
-        }
-      }
-
-      /**
        * f11: the distance to the user location rank.
        */
       Collections.sort(aFeatureList, CandidateAndFeature.getDistToUserLocComparator());
@@ -232,9 +223,24 @@ public class LocGroupFeatures {
       }
 
     }// end of LocEntityAnnotation loop
+    /**
+     * f9: set the most popular countries and popular states for multiple topos in the same
+     * sentence.
+     */
+    for (int i = 0; i < featureArrays.size(); i++) {
+      for (int j = 0; j < featureArrays.get(i).size(); j++) {
+        CandidateAndFeature afeature = featureArrays.get(i).get(j);
+        String cc = afeature.getCountryCode();
+        String adm1 = afeature.getAdm1Code();
+        if (commonCountries.contains(cc))
+          afeature.setF_isCommonCountry(true);
+        if (commonStates.contains(adm1))
+          afeature.setF_isCommonState(true);
+      }
+    }
 
-  //  System.out.println("Common Countries are: \n" + commonCountries);
-  //  System.out.println("Common States are: \n" + commonStates);
+    // System.out.println("Common Countries are: \n" + commonCountries);
+    // System.out.println("Common States are: \n" + commonStates);
 
   }
 
@@ -285,7 +291,7 @@ public class LocGroupFeatures {
   public static void main(String argv[]) throws Exception {
     // sample program, not working.
     Tweet t = new Tweet();
-    LocGroupFeatures cf = new LocGroupFeatures(t,"train");
+    LocGroupFeatures cf = new LocGroupFeatures(t, "train");
     cf.toFeatures();
   }
 
@@ -308,9 +314,9 @@ public class LocGroupFeatures {
   public LocGroupFeatures toFeatures() {
 
     // flaten the two dimension two one dimension.
-    featureVector = new ArrayList<svm_node[]>();
-    labels = new ArrayList<Double>();
-    ids = new ArrayList<String>();
+    featureVector = new ArrayList<svm_node[]>(featureArrays.size());
+    labels = new ArrayList<Double>(featureArrays.size());
+    ids = new ArrayList<String>(featureArrays.size());
     for (int i = 0; i < featureArrays.size(); i++) {
       for (int j = 0; j < featureArrays.get(i).size(); j++) {
         CandidateAndFeature aFeature = featureArrays.get(i).get(j);
@@ -351,21 +357,18 @@ public class LocGroupFeatures {
             // ,f8,//dep
 
             // contextual, country and state
-             ,f9_1
-             ,f9_2
+            , f9_1, f9_2
 
             // disatnce
-//            , f11, f11_1
+            // , f11, f11_1
 
             // string sim
             , f13, f14, f15
 
-        // ,f16// dep
+            // ,f16// dep
 
-        // user location.
-         ,f5
-         ,f17
-         ,f17_1
+            // user location.
+            , f5, f17, f17_1
 
         };
         // double[] vals = new double[part_of_vals.length + f12.length];

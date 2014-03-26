@@ -237,16 +237,16 @@ public class CollaborativeIndex implements Index {
   }
 
   public static void main(String argv[]) throws IOException {
-    GlobalParam.setGazIndex("GazIndex");
-    GlobalParam.setGeoNames("GeoNames");
+    GlobalParam.setGazIndex("/users/indri/GazIndex");
+    // GlobalParam.setGeoNames("GeoNames");
     CollaborativeIndex ci = ResourceFactory.getClbIndex();
     System.out.println(ci.getDocumentsByPhrase("newport").size());
-    for (Document doc : ci.getDocumentsByPhrase("newport"))
+    for (Document doc : ci.getDocumentsByPhrase("San Francisco"))
 
       System.out.println(doc.get(InfoFields.name) + " " + doc.get(InfoFields.countryCode) + " "
               + doc.get(InfoFields.adm1Code) + "\t" + doc.get(InfoFields.adm2Code) + "\t"
-              + doc.get(InfoFields.id) + "\t" + doc.get(InfoFields.latitude) + "\t"
-              + doc.get(InfoFields.longitude));
+              + doc.get(InfoFields.alternativeNamesCount) + "\t" +doc.get(InfoFields.population)+"\t" +doc.get(InfoFields.id) + "\t"
+              + doc.get(InfoFields.latitude) + "\t" + doc.get(InfoFields.longitude));
     if (true)
       return;
     boolean mode = true; // string

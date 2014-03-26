@@ -32,7 +32,6 @@ public class PipelineTest {
       Status status = DataObjectFactory.createStatus(line);
       // create the tweet object from the status.
       Tweet tweet = new Tweet(status);
-//      Tweet tweet = new Tweet("I was born in Harbin. But I am in Pittsburgh right now.");
 
       // If you are not reading JSON, and just parse the string, you should use the following to
       // wrap a sentence in a tweet:
@@ -40,37 +39,42 @@ public class PipelineTest {
 
       System.out.println("////////////////////////////////////////////////////////////////\n"
               + tweet.getText());
+      System.out.println("[MESSAGE]: " + tweet.getText());
+      System.out.println("[COORD]:  " + tweet.getLatitude() + " "
+              + tweet.getLongitude());
+      System.out.println("[USER LOCATION]:" + tweet.getUserLocation());
+      System.out.println("[PLACE FIELD]:" + tweet.getPlace());
 
       // generate the parsed toponyms from the tweet.
       List<LocEntityAnnotation> topos = ParserFactory.getEnAggrParser().parse(tweet);
 
+      System.out.println("GEOPARSING... ");
       // print the extracted toponyms
       for (LocEntityAnnotation topo : topos)
-        System.out.println("Topo is:" + topo.getTokenString() + " " + topo.getNEType());
+        System.out.println(topo.getTokenString() + "  [TYPE]: " + topo.getNEType());
 
-      
       List<CandidateAndFeature> resolved = null;
       if (topos == null)
-        System.out.println("Can not parse. No topos Found.");
+        System.out.println("[NO TOPONYMS PARSED].");
       else {
-        System.out.println("Start to resolve places ..");
+        System.out.println("["+topos.size() + " TOPONYMS FOUND. GEOCODING...]");
+
         long previous = System.currentTimeMillis();
-        
         // resolve the place
         resolved = CoderFactory.getMLGeoCoder().resolve(tweet, "debug");
-        System.out.println("time Spent is :" + (System.currentTimeMillis() - previous));
+        System.out.println("[TIME SPENT]:"
+                + (System.currentTimeMillis() - previous));
         if (resolved == null)
-          System.out.println("No resolve result. OOG.");
+          System.out.println("[NO TOPONYMS RESOLVED]");
         else {
-          System.out.println("Resolution results:");
-          
-          //Note that we could output multiple results for one place. 
-          //This is for the user to decide which is the best they want.
+          System.out.println("[RESOLVED RESULTS ARE]:");
+
+          // Note that we could output multiple results for one place.
+          // This is for the user to decide which is the best they want.
           // We may improve this later to output only one result.
           for (CandidateAndFeature c : resolved) {
-            System.out.println(c.getAsciiName() + " " + c.getLe().getNEType() + " "
-                    + c.getCountryCode() + " " + c.getAdm1Code() + " " + c.getLatitude() + " "
-                    + c.getLongitude());
+            System.out.println(c.getAsciiName() + " Country:" + c.getCountryCode() + " State:"
+                    + c.getAdm1Code() + " Latitude:" + c.getLatitude() + " Longitude:" + c.getLongitude());
           }
         }
       }

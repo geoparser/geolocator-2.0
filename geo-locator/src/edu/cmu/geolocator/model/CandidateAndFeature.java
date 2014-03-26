@@ -914,6 +914,25 @@ public class CandidateAndFeature implements Comparable<CandidateAndFeature> {
     return this.isCountry();
   }
 
+  public void setF_userLocOverlap(ArrayList<ArrayList<Document>>matrixDocs, List<LocEntityAnnotation> userLocs) {
+    // TODO Auto-generated method stub
+    if(userLocs ==null || userLocs.size()==0){
+      //all default are false. No need to set to false explicitly.
+      return;
+    }
+    for (ArrayList<Document> docs : matrixDocs){
+      if(docs==null||docs.size()==0)
+        continue;
+      for (Document doc : docs){
+        String dc = doc.get(InfoFields.countryCode);
+        String ds = doc.get(InfoFields.adm1Code);
+        if (this.countryCode.equals(dc))
+                this.f_userLocCountryAgree = true;
+        if(this.adm1Code.equals(ds))
+            this.f_userLocStateAgree = true;
+      }
+    }
+  }
   public void setF_userLocOverlap(List<LocEntityAnnotation> userLocs) {
     // TODO Auto-generated method stub
     if(userLocs ==null || userLocs.size()==0){
