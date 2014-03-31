@@ -17,7 +17,7 @@ The output format for the commandline and batch file: Each recognized location i
 
 The geocoding result is able to output all the information that is stored in the GeoNames gazetteer for a location, such as country, state info, latitude and longitude, geographical feature type (whether it's a city, country, state, mountain, airport, or something. The meaning of the specific type can be looked up in GeoNames.org).  
 
-/////////////// How to Install: ///////////////
+/////////////// How to Install ///////////////
 
 The algorithm can run on Windows, Mac, or Linux/Unix platforms.
 
@@ -29,8 +29,15 @@ Go to the terminal (if you are using linux or mac osx), or cygwin for windows, c
 This is a long process because we have to download jar files, resources from geonames, and most time-consuming is the indexing of the geoname.
 The estimate time is about 1 hour. It varies with your machine. 
 
+Please go to quickstart to see how to use the geolocator.
+
 To run the fuzzy match algorithm in edu.cmu.geoparser.nlp.spelling, please see the instructions in FuzzyGeoMatch project.
 
 Please send email to wei.zhang@cs.cmu.edu or gelern@cs.cmu.edu if you find any bug or have any question, or any suggestions.
 
-Thank you.
+
+
+////////////// To Do List //////////////////
+1. Improve the speed of the geolocator.
+2. Use ranking instead of binary classification for geocoder
+3. Add openstreetmap data for matching streets and buildings
