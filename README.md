@@ -38,6 +38,7 @@ Please send email to wei.zhang@cs.cmu.edu or gelern@cs.cmu.edu if you find any b
 
 
 ////////////// To Do List //////////////////
+
 1. Improve the speed of the geolocator.
 2. Use ranking instead of binary classification for geocoder
 3. Add openstreetmap data for matching streets and buildings
